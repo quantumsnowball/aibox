@@ -3,15 +3,17 @@ from io import BytesIO
 import matplotlib.pyplot as plt
 import PIL.Image
 import torch
+import torch.nn as nn
 from torchviz import make_dot
 
 
 def show_backward_graph(output: torch.Tensor,
-                        *make_dot_args,
-                        figsize=(12, 9),
-                        dpi='600',
+                        net: nn.Module | None = None,
+                        figsize: tuple[float, float] = (12, 9),
+                        dpi: str = '600',
                         **make_dot_kwargs) -> None:
-    dot = make_dot(output, *make_dot_args, **make_dot_kwargs)
+    params = dict(net.named_parameters()) if net else None
+    dot = make_dot(output, params=params, **make_dot_kwargs)
     dot.attr(dpi=dpi)
     graph_bytes = BytesIO(dot.pipe(format='png'))
     image = PIL.Image.open(graph_bytes)
