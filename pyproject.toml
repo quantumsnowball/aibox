@@ -1,0 +1,18 @@
+[build-system]
+requires = [ "setuptools" ]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aibox"
+version = "1.0.0"
+description = "aibox - AI related tools"
+authors = [
+    { name = "Quantum Snowball", email = "quantum.snowball@gmail.com" }
+]
+dependencies = [
+    "click",
+]
+
+[project.urls]
+Homepage = "https://github.com/quantumsnowball/aibox"
+
