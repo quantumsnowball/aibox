@@ -5,6 +5,7 @@ import PIL.Image
 import torch
 import torch.nn as nn
 from torch.autograd.graph import Node
+from torch.nn.parameter import Parameter
 from torchviz import make_dot
 
 
@@ -31,11 +32,7 @@ def plot_backward_graph(output: torch.Tensor,
     plt.show()
 
 
-def print_backward_graph(output: torch.Tensor,
-                         model: torch.nn.Module | None = None):
-    # if model is suppied, derive the leaf node names
-    leaf_nodes = list(dict(model.named_parameters()).keys()) if model else None
-
+def print_backward_graph(output: torch.Tensor):
     def print_backward_fn(fn: Node, i: int = 0):
         # we arrive at a grad_fn, print its name
         print(f'{i*'|   '}{fn.name()}', end='')
@@ -50,12 +47,14 @@ def print_backward_graph(output: torch.Tensor,
                 print_backward_fn(next_fn, i=i+1)
         # no next functions, should be follow by a leaf node
         else:
-            # print its name from if available
-            if leaf_nodes:
-                print(f' <- {leaf_nodes.pop(0)}', end='')
-            else:
-                print(' <- (Param)', end='')
+            # print its variable shape if possible
+            try:
+                variable: Parameter = getattr(fn, 'variable')
+                print(f' <= {tuple(variable.shape)}', end='')
+            except Exception:
+                print(f' <= (...)', end='')
 
+        # formatting at the end
         if i == 0:
             print('\n', end='')
 
