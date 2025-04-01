@@ -56,5 +56,8 @@ def print_backward_graph(output: torch.Tensor,
             else:
                 print(' <- (Param)', end='')
 
+        if i == 0:
+            print('\n', end='')
+
     if fn := output.grad_fn:
         print_backward_fn(fn)
