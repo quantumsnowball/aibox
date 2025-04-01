@@ -32,8 +32,9 @@ def show_backward_graph(output: torch.Tensor,
 
 
 def print_backward_graph(output: torch.Tensor,
-                         model: torch.nn.Module):
-    leaf_nodes = list(dict(model.named_parameters()).keys())
+                         model: torch.nn.Module | None = None):
+    # if model is suppied, derive the leaf node names
+    leaf_nodes = list(dict(model.named_parameters()).keys()) if model else None
 
     def print_backward_fn(fn: Node, i: int = 0):
         # we arrive at a grad_fn, print its name
@@ -49,9 +50,11 @@ def print_backward_graph(output: torch.Tensor,
                 print_backward_fn(next_fn, i=i+1)
         # no next functions, should be follow by a leaf node
         else:
-            # print its name from the model name dict in order
-            leaf_name = leaf_nodes.pop(0)
-            print(f' <- {leaf_name}', end='')
+            # print its name from if available
+            if leaf_nodes:
+                print(f' <- {leaf_nodes.pop(0)}', end='')
+            else:
+                print(' <- (Param)', end='')
 
     if fn := output.grad_fn:
         print_backward_fn(fn)
