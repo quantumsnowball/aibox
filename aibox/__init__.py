@@ -38,7 +38,7 @@ def print_backward_graph(output: torch.Tensor):
         # point to one or more next functions, should be an intermediate node
         if len(fn.next_functions) > 0:
             # print name as intermediate node format
-            print(f'{i*'|   '}{Fore.YELLOW}{fn.name()}{Style.RESET_ALL}', end='')
+            print(f'{i*'| '}{Fore.YELLOW}{fn.name()}{Style.RESET_ALL}', end='')
             # iter the list and handle with recursion
             for next_fn, _ in fn.next_functions:
                 if not next_fn:
@@ -48,7 +48,7 @@ def print_backward_graph(output: torch.Tensor):
         # no next functions, should be follow by a leaf node
         else:
             # print name as leaf node format
-            print(f'{i*'|   '}{Fore.GREEN}{fn.name()}{Style.RESET_ALL}', end='')
+            print(f'{i*'| '}{Fore.GREEN}{fn.name()}{Style.RESET_ALL}', end='')
             # print its variable shape if possible
             try:
                 variable: Parameter = getattr(fn, 'variable')
