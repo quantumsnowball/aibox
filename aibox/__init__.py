@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import PIL.Image
 import torch
 import torch.nn as nn
+from torch.autograd.graph import Node
 from torchviz import make_dot
 
 
@@ -28,3 +29,14 @@ def show_backward_graph(output: torch.Tensor,
     plt.imshow(image)
     plt.axis('off')
     plt.show()
+
+
+def print_backward_graph(output: torch.Tensor):
+    def print_backward_fn(fn: Node | None, i: int = 0):
+        if not fn:
+            return
+        print(f'{i*'|   '}{fn.name()}')
+        for next_fn, _ in fn.next_functions:
+            print_backward_fn(next_fn, i=i+1)
+
+    print_backward_fn(output.grad_fn)
