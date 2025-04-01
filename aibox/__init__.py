@@ -31,12 +31,27 @@ def show_backward_graph(output: torch.Tensor,
     plt.show()
 
 
-def print_backward_graph(output: torch.Tensor):
-    def print_backward_fn(fn: Node | None, i: int = 0):
-        if not fn:
-            return
-        print(f'{i*'|   '}{fn.name()}')
-        for next_fn, _ in fn.next_functions:
-            print_backward_fn(next_fn, i=i+1)
+def print_backward_graph(output: torch.Tensor,
+                         model: torch.nn.Module):
+    leaf_nodes = list(dict(model.named_parameters()).keys())
 
-    print_backward_fn(output.grad_fn)
+    def print_backward_fn(fn: Node, i: int = 0):
+        # we arrive at a grad_fn, print its name
+        print(f'{i*'|   '}{fn.name()}', end='')
+
+        # point to one or more next functions, should be an intermediate node
+        if len(fn.next_functions) > 0:
+            # iter the list and handle with recursion
+            for next_fn, _ in fn.next_functions:
+                if not next_fn:
+                    continue
+                print('\n', end='')
+                print_backward_fn(next_fn, i=i+1)
+        # no next functions, should be follow by a leaf node
+        else:
+            # print its name from the model name dict in order
+            leaf_name = leaf_nodes.pop(0)
+            print(f' <- {leaf_name}', end='')
+
+    if fn := output.grad_fn:
+        print_backward_fn(fn)
