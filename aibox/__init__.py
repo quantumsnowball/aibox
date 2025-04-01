@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import PIL.Image
 import torch
 import torch.nn as nn
+from colorama import Fore, Style
 from torch.autograd.graph import Node
 from torch.nn.parameter import Parameter
 from torchviz import make_dot
@@ -34,11 +35,10 @@ def plot_backward_graph(output: torch.Tensor,
 
 def print_backward_graph(output: torch.Tensor):
     def print_backward_fn(fn: Node, i: int = 0):
-        # we arrive at a grad_fn, print its name
-        print(f'{i*'|   '}{fn.name()}', end='')
-
         # point to one or more next functions, should be an intermediate node
         if len(fn.next_functions) > 0:
+            # print name as intermediate node format
+            print(f'{i*'|   '}{Fore.YELLOW}{fn.name()}{Style.RESET_ALL}', end='')
             # iter the list and handle with recursion
             for next_fn, _ in fn.next_functions:
                 if not next_fn:
@@ -47,12 +47,15 @@ def print_backward_graph(output: torch.Tensor):
                 print_backward_fn(next_fn, i=i+1)
         # no next functions, should be follow by a leaf node
         else:
+            # print name as leaf node format
+            print(f'{i*'|   '}{Fore.GREEN}{fn.name()}{Style.RESET_ALL}', end='')
             # print its variable shape if possible
             try:
                 variable: Parameter = getattr(fn, 'variable')
-                print(f' <= {tuple(variable.shape)}', end='')
+                print(
+                    f' <= {Fore.GREEN}{tuple(variable.shape)}{Style.RESET_ALL}', end='')
             except Exception:
-                print(f' <= (...)', end='')
+                print(f' <= {Fore.GREEN}(...){Style.RESET_ALL}', end='')
 
         # formatting at the end
         if i == 0:
