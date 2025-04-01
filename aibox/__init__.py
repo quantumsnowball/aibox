@@ -8,7 +8,7 @@ from torch.autograd.graph import Node
 from torchviz import make_dot
 
 
-def show_backward_graph(output: torch.Tensor,
+def plot_backward_graph(output: torch.Tensor,
                         net: nn.Module | None = None,
                         figsize: tuple[float, float] = (12, 9),
                         dpi: str = '600',
