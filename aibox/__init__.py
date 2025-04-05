@@ -1,13 +1,8 @@
-from io import BytesIO
-
-import matplotlib.pyplot as plt
-import PIL.Image
 import torch
 import torch.nn as nn
 from colorama import Fore, Style
 from torch.autograd.graph import Node
 from torch.nn.parameter import Parameter
-from torchviz import make_dot
 
 
 def plot_backward_graph(output: torch.Tensor,
@@ -15,6 +10,13 @@ def plot_backward_graph(output: torch.Tensor,
                         figsize: tuple[float, float] = (12, 9),
                         dpi: str = '600',
                         **make_dot_kwargs) -> None:
+    # import
+    from io import BytesIO
+
+    import matplotlib.pyplot as plt
+    import PIL.Image
+    from torchviz import make_dot
+
     # auto get named parameters from net
     params = dict(net.named_parameters()) if net else None
 
