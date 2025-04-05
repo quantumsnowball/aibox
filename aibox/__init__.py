@@ -3,6 +3,7 @@ import torch.nn as nn
 from colorama import Fore, Style
 from torch.autograd.graph import Node
 from torch.nn.parameter import Parameter
+from torchinfo import summary
 
 
 def plot_backward_graph(output: torch.Tensor,

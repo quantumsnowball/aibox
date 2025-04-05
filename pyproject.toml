@@ -11,6 +11,8 @@ authors = [
 ]
 dependencies = [
     "click",
+    "colorama",
+    "torchinfo",
 ]
 
 [project.urls]
