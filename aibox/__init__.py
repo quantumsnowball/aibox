@@ -36,7 +36,7 @@ def plot_backward_graph(output: torch.Tensor,
 
 
 def print_backward_graph(output: torch.Tensor):
-    def print_backward_fn(fn: Node, i: int = 0):
+    def print_backward_fn(fn: Node, i: int = 1):
         # point to one or more next functions, should be an intermediate node
         if len(fn.next_functions) > 0:
             # print name as intermediate node format
@@ -60,8 +60,9 @@ def print_backward_graph(output: torch.Tensor):
                 print(f' <= {Fore.GREEN}(...){Style.RESET_ALL}', end='')
 
         # formatting at the end
-        if i == 0:
+        if i == 1:
             print('\n', end='')
 
+    print(f'{Fore.GREEN}{tuple(output.shape)}{Style.RESET_ALL} <=')
     if fn := output.grad_fn:
         print_backward_fn(fn)
